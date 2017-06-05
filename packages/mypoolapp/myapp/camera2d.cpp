@@ -24,6 +24,7 @@ QPoint Camera2d::center() const
 void Camera2d::setHalfWidth(double halfWidth)
 {
 	m_w = halfWidth;
+	updateMatrix();
 }
 
 double Camera2d::halfWidth() const

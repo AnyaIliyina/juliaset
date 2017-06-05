@@ -45,6 +45,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent * event)
 		setZRotation(m_zRot + 8 * dx);
 	}*/
 	m_lastPos = event->pos();
+	event->accept();
 	update();
 }
 
@@ -52,7 +53,7 @@ void GLWidget::wheelEvent(QWheelEvent * event)
 {
 	if (event->delta() > 0) 
 	{
-		cam.scale(1.3);
+		cam.scale(2);
 	}
 	else {
 		cam.scale(0.8);
@@ -134,7 +135,6 @@ void GLWidget::initializeGL()
 		"}\n";
 	fragShader->compileSourceCode(fragSource);
 
-
 #define VERTEX_ATTR 0
 #define TEXTURE_ATTR 1
 	m_program = new QOpenGLShaderProgram;
@@ -145,21 +145,26 @@ void GLWidget::initializeGL()
 	m_program->link();
 	m_program->bind();
 	m_program->setUniformValue("texture", 0);
+
+	
 }
 
 void GLWidget::resizeGL(int width, int height)
 {
+	
 	int side = qMin(width, height);
 	glViewport((width - side) / 2, (height - side) / 2, side, side);
-	//m_projection.viewport(0, h - min, min, min, -1, 1);
+	m_projection.viewport((width - side) / 2, (height - side) / 2, side, side);
 //	m_projection.setToIdentity();
 	//m_projection.viewport(-2, -2, 4, 4, -1.F, 1.F);
 //	m_projection.perspective(45.0f, (GLfloat)w / h, -1.F, 1.F);
-//	m_scaling = cam.halfWidth()*2/min;
+	m_scaling = cam.halfWidth()*2/side;
 }
 
 void GLWidget::paintGL()
 {
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(1, 1, 1, 1);
 	QMatrix4x4 m;
 	//m.ortho(-0.5f, +0.5f, +0.5f, -0.5f, 4.0f, 15.0f);
 	//m.translate(0.0f, 0.0f, -10.0f);
@@ -174,6 +179,7 @@ void GLWidget::paintGL()
 	m_program->setAttributeBuffer(TEXTURE_ATTR, GL_FLOAT, 2 * sizeof(GLfloat), 2, 4 * sizeof(GLfloat));
 
 	m_texture->bind();
+//	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, )
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 	
 	

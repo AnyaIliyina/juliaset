@@ -16,7 +16,6 @@ public:
 	GLWidget(QWidget *parent = 0);
 	~GLWidget();
 protected:
-	void loadPaletteTexture();
 	void mousePressEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
 	void wheelEvent(QWheelEvent *event);
