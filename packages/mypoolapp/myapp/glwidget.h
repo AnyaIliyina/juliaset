@@ -5,6 +5,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
 #include "camera2d.h"
+#include <qfile.h>
 class QOpenGLShaderProgram;
 class QOpenGLTexture;
 
