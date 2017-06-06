@@ -22,6 +22,7 @@ protected:
 	Camera2d cam;
 	QPoint m_lastPos;
 	double m_scaling;
+	int m_side;
 	QOpenGLShaderProgram* m_program;
 	int m_mvpLoc, m_cLoc, m_iterCountLoc, m_paletteLoc, m_coordLoc;
 	QOpenGLVertexArrayObject m_vao;

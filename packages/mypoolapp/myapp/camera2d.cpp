@@ -52,8 +52,9 @@ const QMatrix4x4 & Camera2d::viewMatrix() const
 
 void Camera2d::updateMatrix()
 {
+	m_matrix.setToIdentity();
 	m_matrix.ortho(m_centerX - m_w, m_centerX + m_w, 
 					m_centerY - m_w, m_centerY + m_w, 
-					-1.F, 1.F);
+					-1.F, 15.F);
 
 }

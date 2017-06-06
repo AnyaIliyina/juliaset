@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>597</width>
-    <height>404</height>
+    <width>581</width>
+    <height>543</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,7 +48,20 @@
      </layout>
     </item>
     <item row="1" column="0">
-     <widget class="GLWidget" name="openGLWidget"/>
+     <widget class="GLWidget" name="openGLWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>800</width>
+        <height>800</height>
+       </size>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -57,7 +70,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>597</width>
+     <width>581</width>
      <height>21</height>
     </rect>
    </property>

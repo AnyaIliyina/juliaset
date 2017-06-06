@@ -33,17 +33,13 @@ void GLWidget::mousePressEvent(QMouseEvent * event)
 
 void GLWidget::mouseMoveEvent(QMouseEvent * event)
 {
-	int dx = event->x() - m_lastPos.x();
+	int dx = m_lastPos.x() - event->x();
 	int dy = event->y() - m_lastPos.y();
-	auto br = m_scaling*dx;
-
+	
 	if (event->buttons() & Qt::LeftButton) {
 		cam.moveCenter(m_scaling*dx, m_scaling*dy);
 	}
-	/*else if (event->buttons() & Qt::RightButton) {
-		setXRotation(m_xRot + 8 * dy);
-		setZRotation(m_zRot + 8 * dx);
-	}*/
+	
 	m_lastPos = event->pos();
 	event->accept();
 	update();
@@ -58,6 +54,7 @@ void GLWidget::wheelEvent(QWheelEvent * event)
 	else {
 		cam.scale(0.8);
 	}
+	m_scaling = cam.halfWidth() * 2 / m_side;
 	event->accept();
 	update();
 }
@@ -152,13 +149,10 @@ void GLWidget::initializeGL()
 void GLWidget::resizeGL(int width, int height)
 {
 	
-	int side = qMin(width, height);
-	glViewport((width - side) / 2, (height - side) / 2, side, side);
-	m_projection.viewport((width - side) / 2, (height - side) / 2, side, side);
-//	m_projection.setToIdentity();
-	//m_projection.viewport(-2, -2, 4, 4, -1.F, 1.F);
-//	m_projection.perspective(45.0f, (GLfloat)w / h, -1.F, 1.F);
-	m_scaling = cam.halfWidth()*2/side;
+	m_side = qMin(width, height);
+	m_projection.setToIdentity();
+	m_projection.viewport((width - m_side) / 2, (height - m_side) / 2, m_side, m_side);
+	m_scaling = cam.halfWidth()*2/ m_side;
 }
 
 void GLWidget::paintGL()
@@ -172,7 +166,7 @@ void GLWidget::paintGL()
 	//m.rotate(yRot / 16.0f, 0.0f, 1.0f, 0.0f);
 	//m.rotate(zRot / 16.0f, 0.0f, 0.0f, 1.0f);
 	auto matr = cam.viewMatrix();
-	m_program->setUniformValue("matrix", cam.viewMatrix());
+	m_program->setUniformValue("matrix", cam.viewMatrix()* m_projection);
 	m_program->enableAttributeArray(VERTEX_ATTR);
 	m_program->enableAttributeArray(TEXTURE_ATTR);
 	m_program->setAttributeBuffer(VERTEX_ATTR, GL_FLOAT, 0, 2, 4 * sizeof(GLfloat));
