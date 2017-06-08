@@ -61,23 +61,27 @@ void GLWidget::wheelEvent(QWheelEvent * event)
 
 void GLWidget::makeObject()
 {
-	static const float coords[3][2] = {
-		{-0.5, 0},
-		{0.5, 0.5},
-		{0.5, 0}
+	static const float coords[4][2] = {
+		{-1, 1},
+		{ 1, 1 },
+		{1, -1},
+		{-1, -1},
+		
+		
 	};
-	static const  float textCoords[3][2] = {
+	static const  float textCoords[4][2] = {
 		{0, 0},
 		{0.5, 1},
-		{1, 1}
+		{1, 1},
+		{ 0, 0 },
 	};
-	static const int indeces[3] = { 0,1,2 };
+	static const int indeces[5] = { 0, 1, 2,3, 0};
 
 	QVector <GLfloat> vertData;
 	QVector <GLint> indData;
 	QVector <GLfloat> textData;
 
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 4; ++i)
 	{
 		for (int j = 0; j < 2; ++j)
 		{
@@ -89,7 +93,7 @@ void GLWidget::makeObject()
 		}
 	}
 
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 5; ++i)
 		indData.append(indeces[i]);
 
 	m_vbo.create();
@@ -151,30 +155,28 @@ void GLWidget::resizeGL(int width, int height)
 	
 	m_side = qMin(width, height);
 	m_projection.setToIdentity();
+	//m_projection.ortho(-2, 2, -2, 2, -1, 1);
 	m_projection.viewport((width - m_side) / 2, (height - m_side) / 2, m_side, m_side);
+	//m_projection.perspective(30, (GLfloat)width / height, -1, 1);
 	m_scaling = cam.halfWidth()*2/ m_side;
+	
 }
 
 void GLWidget::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClearColor(1, 1, 1, 1);
-	QMatrix4x4 m;
-	//m.ortho(-0.5f, +0.5f, +0.5f, -0.5f, 4.0f, 15.0f);
-	//m.translate(0.0f, 0.0f, -10.0f);
-	//m.rotate(xRot / 16.0f, 1.0f, 0.0f, 0.0f);
-	//m.rotate(yRot / 16.0f, 0.0f, 1.0f, 0.0f);
-	//m.rotate(zRot / 16.0f, 0.0f, 0.0f, 1.0f);
-	auto matr = cam.viewMatrix();
-	m_program->setUniformValue("matrix", cam.viewMatrix()* m_projection);
+	
+	m_program->setUniformValue("matrix", cam.viewMatrix());
 	m_program->enableAttributeArray(VERTEX_ATTR);
 	m_program->enableAttributeArray(TEXTURE_ATTR);
 	m_program->setAttributeBuffer(VERTEX_ATTR, GL_FLOAT, 0, 2, 4 * sizeof(GLfloat));
 	m_program->setAttributeBuffer(TEXTURE_ATTR, GL_FLOAT, 2 * sizeof(GLfloat), 2, 4 * sizeof(GLfloat));
 
 	m_texture->bind();
-//	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, )
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	glDrawElements(GL_TRIANGLE_FAN, 5, GL_UNSIGNED_INT, 0);
+	//glDrawArrays(GL_TRIANGLES, 0, 4);
 	
 	
 }
