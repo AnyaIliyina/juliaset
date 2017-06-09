@@ -13,6 +13,9 @@ public:
 
 	~MainWindow();
 
+public slots:
+	void on_okButton_clicked();
+
 protected:
 	Ui::MainWindow* m_ui;
 };

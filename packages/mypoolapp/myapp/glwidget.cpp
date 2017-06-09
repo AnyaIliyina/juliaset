@@ -16,12 +16,23 @@
 GLWidget::GLWidget(QWidget* parent): QOpenGLWidget(parent),
 	m_vbo(QOpenGLBuffer::Type::VertexBuffer), m_ibo(QOpenGLBuffer::Type::IndexBuffer)
 {
-	cam.setHalfWidth(2);
+	
 }
 
 
 GLWidget::~GLWidget()
 {
+}
+
+void GLWidget::setC(double cX, double cY)
+{
+	m_program->link();
+	m_program->bind();
+	m_program->setUniformValue("texture", 0);
+	m_program->setUniformValue("iter", 500);
+	m_program->setUniformValue("c", QVector2D(cX, cY));
+	cam.setHalfWidth(0.7);
+	update();
 }
 
 
@@ -70,9 +81,9 @@ void GLWidget::makeObject()
 		
 	};
 	static const  float textCoords[4][2] = {
-		{0, 0},
-		{0.5, 1},
+		{0, 1},
 		{1, 1},
+		{1, 0},
 		{ 0, 0 },
 	};
 	static const int indeces[5] = { 0, 1, 2,3, 0};
@@ -120,21 +131,46 @@ void GLWidget::initializeGL()
         "attribute mediump vec4 texCoord;\n"
         "varying mediump vec4 texc;\n"
         "uniform mediump mat4 matrix;\n"
-        "void main(void)\n"
-        "{\n"
+		    "void main(void)\n"
+		"{ \n"
         "    gl_Position = matrix * vertex;\n"
         "    texc = texCoord;\n"
 		"}\n";
 	vshader->compileSourceCode(vertSource);
 
 	QOpenGLShader* fragShader = new QOpenGLShader(QOpenGLShader::Fragment, this);
-	const char* fragSource =  "uniform sampler2D texture;\n"
-        "varying mediump vec4 texc;\n"
-        "void main(void)\n"
-        "{\n"
-        "    gl_FragColor = texture2D(texture, texc.st);\n"
+	const char* fragSource = "uniform sampler2D texture;\n"
+		"varying mediump vec4 texc;\n"
+		"uniform mediump vec2 c;\n"
+		"uniform int iter;\n"
+		"void main(void)\n"
+		"{\n"
+
+		"mediump vec2 z;\n"
+		"mediump vec2 t;\n"
+		"z.x = 4.0 * (texc.x - 0.5);\n"
+		"z.y = 4.0 * (texc.y - 0.5);\n"
+		
+		"int i;\n"
+		"for (i = 0; i<iter; i++)\n"
+		"{\n"
+			"mediump float x = (z.x * z.x - z.y * z.y) + c.x;\n"
+			"mediump float y = (z.y * z.x + z.x * z.y) + c.y;\n"
+
+			"if ((x * x + y * y) > 4.0) break;\n"
+			"z.x = x;\n"
+			"z.y = y;\n"
+		"}\n"
+		
+		"t.y = 0.5;\n"
+		"if(i== iter)\n"
+			"t.x = 0.0; \n"	
+		"else t.x = float(i) / 100.0;\n"
+
+		"gl_FragColor = texture2D(texture, t);\n"				//xyzw rgba stpq
 		"}\n";
 	fragShader->compileSourceCode(fragSource);
+	
 
 #define VERTEX_ATTR 0
 #define TEXTURE_ATTR 1
@@ -146,7 +182,9 @@ void GLWidget::initializeGL()
 	m_program->link();
 	m_program->bind();
 	m_program->setUniformValue("texture", 0);
-
+	m_program->setUniformValue("iter", 500);
+	setC(-0.4, 0.6);
+	
 	
 }
 

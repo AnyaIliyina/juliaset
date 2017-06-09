@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>581</width>
-    <height>543</height>
+    <width>899</width>
+    <height>889</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit"/>
+         <widget class="QLineEdit" name="lineEdit">
+          <property name="text">
+           <string>-0.4</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -41,7 +45,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_2"/>
+         <widget class="QLineEdit" name="lineEdit_2">
+          <property name="text">
+           <string>0.6</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -63,6 +71,13 @@
       </property>
      </widget>
     </item>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="okButton">
+      <property name="text">
+       <string>Ok</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -70,7 +85,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>581</width>
+     <width>899</width>
      <height>21</height>
     </rect>
    </property>

@@ -15,6 +15,7 @@ public:
 
 	GLWidget(QWidget *parent = 0);
 	~GLWidget();
+	void setC(double cX, double cY);
 protected:
 	void mousePressEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
